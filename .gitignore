@@ -1,0 +1,6 @@
+
+*.json~
+
+*.ejs~
+
+node_modules/.bin/express
