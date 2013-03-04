@@ -35,13 +35,24 @@
 
 
 <div data-role="page" id="page">
+  <div data-role="header">
+  <img src="UseMyWordsS.png" width="480" height="240" alt="Use My Words" />
+  </div>
   <div data-role="content">
     <p><a href="#" data-role="button">Use My Words</a></p>
+    <div data-role="fieldcontain">
+      <label for="textinput">Action:</label>
+      <input type="text" name="textinput" id="myaction" value="Question"  />
+    </div>
+    <div data-role="fieldcontain">
+      <label for="textinput">Subject:</label>
+      <input type="text" name="textinput" id="mysubject" value="for You"  />
+    </div>
+    
     <div id="out"></div>
     <div id="log"></div>
     <p>
-  <div>
-  <canvas id="drawing-canvas" width="100" height="100"></canvas>
+  </div>
 </div>
 
 <div id="colorholder"></div>
@@ -53,95 +64,23 @@
 
     //Create a reference to the pixel data for our drawing.
     var fbDataRef = new Firebase('https://usemywords.firebaseio.com/users/mark');
-	var pixelDataRef = fbDataRef.child('drawing')
 	var textDataRef = fbDataRef.child('text')
 
 	// Set up the text input
-	var myText = document.getElementById('mytext');
+	var myAction = document.getElementById('myaction');
+	var mySubject = document.getElementById('mysubject');
 	
 	// Keep track of changes to text field.
-	myText.onchange = function () { textUpdated() };
+	myAction.onchange = function () { textUpdated() };
+	mySubject.onchange = function () { textUpdated() };
 
-    // Set up our canvas
-    var myCanvas = document.getElementById('drawing-canvas');
-    var myContext = myCanvas.getContext ? myCanvas.getContext('2d') : null;
-    if (myContext == null) {
-      alert("You must use a browser that supports HTML5 Canvas to run this demo.");
-      return;
-    }
-
-    //Setup each color palette & add it to the screen
-    var colors = ["fff","000","f00","0f0","00f","88f","f8d","f88","f05","f80","0f8","cf0","08f","408","ff8","8ff"];
-    for (c in colors) {
-      var item = $('<div/>').css("background-color", '#' + colors[c]).addClass("colorbox");
-      item.click((function () {
-        var col = colors[c];
-        return function () {
-          currentColor = col;
-        };
-      })());
-      item.appendTo('#colorholder');
-    }
-
-    //Keep track of if the mouse is up or down
-    myCanvas.onmousedown = function () {mouseDown = 1;};
-    myCanvas.onmouseout = myCanvas.onmouseup = function () {
-      mouseDown = 0, lastPoint = null;
-    };
-
-    //Draw a line from the mouse's last position to its current position
-    var drawLineOnMouseMove = function(e) {
-      if (!mouseDown) return;
-
-      // Bresenham's line algorithm. We use this to ensure smooth lines are drawn
-      var offset = $('canvas').offset();
-      var x1 = Math.floor((e.pageX - offset.left) / pixSize - 1),
-        y1 = Math.floor((e.pageY - offset.top) / pixSize - 1);
-      var x0 = (lastPoint == null) ? x1 : lastPoint[0];
-      var y0 = (lastPoint == null) ? y1 : lastPoint[1];
-      var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
-      var sx = (x0 < x1) ? 1 : -1, sy = (y0 < y1) ? 1 : -1, err = dx - dy;
-      while (true) {
-        //write the pixel into Firebase, or if we are drawing white, remove the pixel
-        pixelDataRef.child(x0 + ":" + y0).set(currentColor === "fff" ? null : currentColor);
-
-        if (x0 == x1 && y0 == y1) break;
-        var e2 = 2 * err;
-        if (e2 > -dy) {
-          err = err - dy;
-          x0 = x0 + sx;
-        }
-        if (e2 < dx) {
-          err = err + dx;
-          y0 = y0 + sy;
-        }
-      }
-      lastPoint = [x1, y1];
-    }
-    $(myCanvas).mousemove(drawLineOnMouseMove);
-    $(myCanvas).mousedown(drawLineOnMouseMove);
 
 	var textUpdated = function() {
-		textDataRef.child("testtest").set(myText.value);
+		textDataRef.child("currentaction").set(myText.value);
+		textDataRef.child("currentsubject").set(myText.value);
 	}
 
 
-
-    // Add callbacks that are fired any time the pixel data changes and adjusts the canvas appropriately.
-    // Note that child_added events will be fired for initial pixel data as well.
-    var drawPixel = function(snapshot) {
-      var coords = snapshot.name().split(":");
-      myContext.fillStyle = "#" + snapshot.val();
-      myContext.fillRect(parseInt(coords[0]) * pixSize, parseInt(coords[1]) * pixSize, pixSize, pixSize);
-    }
-    var clearPixel = function(snapshot) {
-      var coords = snapshot.name().split(":");
-      myContext.clearRect(parseInt(coords[0]) * pixSize, parseInt(coords[1]) * pixSize, pixSize, pixSize);
-    }
-	
-    pixelDataRef.on('child_added', drawPixel);
-    pixelDataRef.on('child_changed', drawPixel);
-    pixelDataRef.on('child_removed', clearPixel);
   });
 </script></p>
   </div>
