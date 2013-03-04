@@ -76,9 +76,21 @@
 
 
 	var textUpdated = function() {
-		textDataRef.child("currentaction").set(myText.value);
-		textDataRef.child("currentsubject").set(myText.value);
+		textDataRef.child("currentaction").set(myAction.value);
+		textDataRef.child("currentsubject").set(mySubject.value);
 	}
+	
+	var fbUpdated = function(snapshot) {
+		if (snapshot.name() == "currentaction") {
+			myAction.value = snapshot.val();
+		} else {
+			mySubject.value = snapshot.val();
+		}
+	}
+	
+    pixelDataRef.on('child_added', fbUpdated);
+    pixelDataRef.on('child_changed', fbUpdated);
+    pixelDataRef.on('child_removed', fbUpdated);
 
 
   });
