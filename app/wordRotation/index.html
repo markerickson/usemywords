@@ -1,0 +1,299 @@
+<html>
+  <head>
+    <!-- example coded by Robbie Tilton [www.RobbieTilton.com] 
+    
+    -- modified for word selection for usemywords demo by Mark Erickson --
+    
+    If you're new to three.js and you're using Chrome to run the web app locally you'll receive cross-domain issues with
+    loading in the files.  To run it locally - there is a simple python command you can use in your terminal: 'python -m SimpleHTTPServer 8000'
+    This will resolve cross-domain issues with Chrome and the example will be viewable on localhost:8000
+
+    If you plan to put this up on a webpage you may also want to reduce the image sizes after you download them.  Example: Photoshop > Save for Web Devices
+    -->
+    <title>Word Rotation - Leap</title>
+    <style>
+      body{margin: 0px; padding: 0px;}
+      canvas { width: 100%; height: 100%; background-color: black; }
+    </style>
+    <script src="scripts/three.js"></script>
+    <script src="scripts/leap.js"></script>
+  </head>
+  <body>
+    <script>
+        //map function to be used to map values from leap into proper degrees (0-360)
+        function map(value, inputMin, inputMax, outputMin, outputMax){
+        outVal = ((value - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin);  
+        if(outVal >  outputMax){
+          outVal = outputMax;
+        }
+        if(outVal <  outputMin){
+          outVal = outputMin;
+        } 
+        return outVal;
+      }
+
+      //create scene
+      var scene = new THREE.Scene();
+      var renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement); 
+
+
+      // create a Directional light as pretend sunshine.
+      directional = new THREE.DirectionalLight( 0xCCCCCC, 1.2 )
+      directional.castShadow = true
+      directional.position.set( 100, 200, 300 )
+      directional.target.position.copy( new THREE.Vector3(0,0,0) )
+      directional.shadowCameraTop     =  1000
+      directional.shadowCameraRight   =  1000
+      directional.shadowCameraBottom  = -1000
+      directional.shadowCameraLeft    = -1000
+      directional.shadowCameraNear    =  600
+      directional.shadowCameraFar     = -600
+      directional.shadowBias          =   -0.0001
+      directional.shadowDarkness      =    0.4
+      directional.shadowMapWidth      = directional.shadowMapHeight = 2048
+      scene.add( directional )
+
+      window.ambient = new THREE.AmbientLight( 0x666666 )
+      scene.add( ambient )
+
+
+      // create the stars
+      var pMaterial = new THREE.ParticleBasicMaterial({
+          color: 0xFFFFFF,
+          size: 10,
+          map: THREE.ImageUtils.loadTexture(
+            "media/letterpair.png"
+          ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+      });
+      var letterpairCount = 400;
+      var letterpairs = new THREE.Geometry(), pMaterial;
+      for(var p = 0; p < letterpairCount; p++) {
+        var pX = Math.random() * 1000 - 500,
+            pY = Math.random() * 1000 - 500,
+            pZ = Math.random() * 1000 - 500,
+            letterpair = new THREE.Vector3(pX, pY, pZ)
+        letterpairs.vertices.push(letterpair);
+      }
+      scene.add(letterpairs)
+      window.letterpairSystem = new THREE.ParticleSystem(letterpairs, pMaterial);
+      letterpairSystem.sortParticles = true;
+      scene.add(letterpairSystem);
+
+///
+      // create the stars
+      var pMaterial = new THREE.ParticleBasicMaterial({
+          color: 0xFFFFFF,
+          size: 10,
+          map: THREE.ImageUtils.loadTexture(
+            "media/letterpairE.png"
+          ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+      });
+      var letterpairCount = 400;
+      var letterpairs = new THREE.Geometry(), pMaterial;
+      for(var p = 0; p < letterpairCount; p++) {
+        var pX = Math.random() * 1000 - 500,
+            pY = Math.random() * 1000 - 500,
+            pZ = Math.random() * 1000 - 500,
+            letterpair = new THREE.Vector3(pX, pY, pZ)
+        letterpairs.vertices.push(letterpair);
+      }
+      scene.add(letterpairs)
+      window.letterpairSystem = new THREE.ParticleSystem(letterpairs, pMaterial);
+      letterpairSystem.sortParticles = true;
+      scene.add(letterpairSystem);
+
+///
+
+
+      // create the stars
+      var pMaterial = new THREE.ParticleBasicMaterial({
+          color: 0xFFFFFF,
+          size: 10,
+          map: THREE.ImageUtils.loadTexture(
+            "media/letterpairI.png"
+          ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+      });
+      var letterpairCount = 400;
+      var letterpairs = new THREE.Geometry(), pMaterial;
+      for(var p = 0; p < letterpairCount; p++) {
+        var pX = Math.random() * 1000 - 500,
+            pY = Math.random() * 1000 - 500,
+            pZ = Math.random() * 1000 - 500,
+            letterpair = new THREE.Vector3(pX, pY, pZ)
+        letterpairs.vertices.push(letterpair);
+      }
+      scene.add(letterpairs)
+      window.letterpairSystem = new THREE.ParticleSystem(letterpairs, pMaterial);
+      letterpairSystem.sortParticles = true;
+      scene.add(letterpairSystem);
+
+///
+
+
+      // create the stars
+      var pMaterial = new THREE.ParticleBasicMaterial({
+          color: 0xFFFFFF,
+          size: 10,
+          map: THREE.ImageUtils.loadTexture(
+            "media/letterpairO.png"
+          ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+      });
+      var letterpairCount = 400;
+      var letterpairs = new THREE.Geometry(), pMaterial;
+      for(var p = 0; p < letterpairCount; p++) {
+        var pX = Math.random() * 1000 - 500,
+            pY = Math.random() * 1000 - 500,
+            pZ = Math.random() * 1000 - 500,
+            letterpair = new THREE.Vector3(pX, pY, pZ)
+        letterpairs.vertices.push(letterpair);
+      }
+      scene.add(letterpairs)
+      window.letterpairSystem = new THREE.ParticleSystem(letterpairs, pMaterial);
+      letterpairSystem.sortParticles = true;
+      scene.add(letterpairSystem);
+
+
+///
+
+
+      // create the stars
+      var pMaterial = new THREE.ParticleBasicMaterial({
+          color: 0xFFFFFF,
+          size: 10,
+          map: THREE.ImageUtils.loadTexture(
+            "media/letterpairU.png"
+          ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+      });
+      var letterpairCount = 400;
+      var letterpairs = new THREE.Geometry(), pMaterial;
+      for(var p = 0; p < letterpairCount; p++) {
+        var pX = Math.random() * 1000 - 500,
+            pY = Math.random() * 1000 - 500,
+            pZ = Math.random() * 1000 - 500,
+            letterpair = new THREE.Vector3(pX, pY, pZ)
+        letterpairs.vertices.push(letterpair);
+      }
+      scene.add(letterpairs)
+      window.letterpairSystem = new THREE.ParticleSystem(letterpairs, pMaterial);
+      letterpairSystem.sortParticles = true;
+      scene.add(letterpairSystem);
+
+
+///
+      //selections object
+      window.selections = new THREE.Mesh(
+        new THREE.SphereGeometry( 50 + 1, 32, 32 ),
+        new THREE.MeshLambertMaterial({ 
+          map: THREE.ImageUtils.loadTexture( 'media/selections.jpg' ),
+          transparent: true,
+          blending: THREE.CustomBlending,
+          blendSrc: THREE.SrcAlphaFactor,
+          blendDst: THREE.OneMinusSrcColorFactor,
+          blendEquation: THREE.AddEquation
+        })
+      )
+      selections.position.set( 0, 0, 0 )
+      selections.receiveShadow = true
+      selections.castShadow = true
+      scene.add( selections )
+
+
+      //words object
+      var wordsBumpImage = THREE.ImageUtils.loadTexture( "media/wordsBumpMap.jpg" );
+      var geometry = new THREE.SphereGeometry(50, 40, 40)
+      var material = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture( 'media/wordsSatTexture.jpg' ), ambient: 0x050505, color: 0xFFFFFF, specular: 0x555555, bumpMap: wordsBumpImage, bumpScale: 19, metal: true } );
+      window.words = new THREE.Mesh( geometry, material );
+      scene.add(words);
+
+
+      //add camera
+      WIDTH      = window.innerWidth,
+      HEIGHT     = window.innerHeight,
+      VIEW_ANGLE = 45,
+      ASPECT     = WIDTH / HEIGHT,
+      NEAR       = 0.1,
+      FAR        = 10000
+      window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+      camera.lookAt( scene.position )
+      camera.position.set( 0, 0, 290 )
+      console.log(camera);
+
+      //initite variables
+      var firstValidFrame = null
+      var cameraRadius = 290
+      var rotateY = 90, rotateX = 0, curY = 0
+      var fov = camera.fov;
+
+
+      //request animation frame and connect to leap socket
+      Leap.loop(function(frame) {
+        if (frame.valid) {
+
+          //rotate cloud and words independently
+          selections.rotation.y+=.002
+          words.rotation.y+=.001
+
+          if (!firstValidFrame) firstValidFrame = frame
+          var t = firstValidFrame.translation(frame)
+
+          //limit y-axis between 0 and 180 degrees
+          curY = map(t[1], -300, 300, 0, 179)
+
+          //assign rotation coordinates
+          rotateX = t[0]
+          rotateY = -curY
+
+          zoom = Math.max(0, t[2]);
+          zoomFactor = 1/(1 + (zoom / 150));
+
+          //adjust 3D spherical coordinates of the camera
+          camera.position.x = words.position.x + cameraRadius * Math.sin(rotateY * Math.PI/180) * Math.cos(rotateX * Math.PI/180)
+          camera.position.z = words.position.y + cameraRadius * Math.sin(rotateY * Math.PI/180) * Math.sin(rotateX * Math.PI/180)
+          camera.position.y = words.position.z + cameraRadius * Math.cos(rotateY * Math.PI/180)
+          camera.fov = fov * zoomFactor;
+        }
+
+        camera.updateProjectionMatrix();
+        camera.lookAt(scene.position)
+        renderer.render(scene, camera)
+      });
+
+      //window resize method
+      window.addEventListener( 'resize', onWindowResize, false );
+      function onWindowResize(){
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize( window.innerWidth, window.innerHeight );
+      }
+    </script>
+  </body>
+</html>
+
